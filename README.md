@@ -23,5 +23,10 @@ if (!requireNamespace("devtools", quietly = TRUE))
 devtools::install_github("gzahn/CommunityAssemblR")
 ```
 
+### Build Info
+
+R version 4.3.1 (2023-06-16)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 22.04.3 LTS
 
 
