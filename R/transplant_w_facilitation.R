@@ -13,12 +13,11 @@ scale01 <- function(x){
   if(max(x) > 0){return((x - min(x)) / (max(x) - min(x)))}
 }
 
-transplant_w_antagonism <- function(recipient,donor,antag.ubiq=.5,antag.strength=.1,antag.abundant=TRUE){
+transplant_w_facilitation <- function(recipient,donor,facil.ubiq=.5,facil.strength=1,facil.abundant=TRUE){
   
   # rescale donor community to same range as recipient community
   # scaled against mean from recipient
-  donor <- round(apply(donor,2,scale01) * (round(median(colSums(recipient) / nrow(recipient)))))
-  
+  donor <- round(apply(donor,2,scale01) * (round(median(colSums(recipient)))))
   
   # where taxa overlap, just take sum of both samples
   shared_donor <- donor[,colnames(donor) %in% colnames(recipient)]
@@ -33,24 +32,24 @@ transplant_w_antagonism <- function(recipient,donor,antag.ubiq=.5,antag.strength
   novel_taxa <- novel_taxa[order(as.numeric(sub("newtaxon_","",x = novel_taxa)))]
   
   # select antagonists from resident community
-  num.antagonists <- round(length(novel_taxa)*antag.ubiq)
-  if(!antag.abundant){ # choose random facilitator taxa
-    antag.taxa <- sample(colnames(recipient),num.antagonists)  
+  num.facilitators <- round(length(novel_taxa)*facil.ubiq)
+  if(!facil.abundant){ # choose random facilitator taxa
+    facil.taxa <- sample(colnames(recipient),num.facilitators)  
   }
-  if(antag.abundant){ # choose most abundant facilitator taxa
-    antag.taxa <- names(colSums(recipient)[order(colSums(recipient),decreasing = TRUE)][1:num.antagonists])
+  if(facil.abundant){ # choose most abundant facilitator taxa
+    facil.taxa <- names(colSums(recipient)[order(colSums(recipient),decreasing = TRUE)][1:num.facilitators])
   }
-  antagonists <- recipient[,antag.taxa]
+  facilitators <- recipient[,facil.taxa]
   
   # assign them to a paired novel taxon from the donor community
-  antagonized <- donor[,sample(novel_taxa,num.antagonists)]
+  facilitated <- donor[,sample(novel_taxa,num.facilitators)]
   
-  # reduce 'antagonized' taxa by multiplier based on antagonists' scaled abundances
-  antag.multiplier <- 1 - (t(apply(recipient,1,function(x){x/sum(x)}))[,antag.taxa] * antag.strength)
-  antagonized <- round(antagonized * antag.multiplier)
-  antagonized[antagonized < 0] <- 0 # take care of any potential negative values
+  # increase 'facilitated' taxa by multiplier based on antagonists' scaled abundances
+  facil.multiplier <- 1 + (t(apply(recipient,1,function(x){x/sum(x)}))[,facil.taxa] * facil.strength)
+  facilitated <- round(facilitated * facil.multiplier)
+  
   newdonor <- donor[,novel_taxa]
-  newdonor[,colnames(antagonized)] <- antagonized
+  newdonor[,colnames(facilitated)] <- facilitated
   
   
   # combine reduced new taxa with augmented recipient community

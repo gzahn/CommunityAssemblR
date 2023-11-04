@@ -42,4 +42,5 @@ build_donor_community <- function(resident.comm,n.transplant.taxa,overlap=0){
   return(transplant.comm)
 }
 
-build_donor_community(resident.comm = x,n.transplant.taxa = 20,overlap = .2)
+# example
+# build_donor_community(resident.comm = x,n.transplant.taxa = 20,overlap = .2)

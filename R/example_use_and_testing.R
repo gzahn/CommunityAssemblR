@@ -5,8 +5,13 @@ library(SpiecEasi); packageVersion("SpiecEasi")
 # load CommunityAssemblR functions
 source("./R/build_even_community.R")
 source("./R/link_taxa_abundances.R")
-source("./R/reduce_taxa_abundances.R")
-View(y)
+source("./R/reduce_abundances.R")
+source("./R/increase_abundances.R")
+source("./R/build_transplant_community.R")
+source("./R/transplant_w_antagonism.R")
+source("./R/transplant_w_facilitation.R")
+source("./R/helper_functions.R")
+
 # build an even community table
 x <- build_even_community(n.taxa = 100,n.samples = 44,n.reads = 3000, taxa.sd = 30)
 y <- link_taxa_abundances(dat = x,n.taxa = 50,relationship = "hub",link.scale = 3,n.links = 5)
@@ -125,6 +130,10 @@ avg_path_length[[links]] <-
 
 
 }
+
+map(hub_se_graph,plot_hubs)
+
+
 # plot hub scores
 df <- hubscores %>% reduce(cbind) %>% as.data.frame
 names(df) <- paste0("link_",1:5)
@@ -139,9 +148,124 @@ df %>%
        x="Network hub score",
        fill="Num. links")
 
+
 # plot assortativity
-assortativity
+data.frame(
+  n_links = rep(1:5,each=10),
+  assortativity = assortativity %>% unlist
+) %>% 
+  ggplot(aes(x=assortativity)) +
+  ggridges::geom_density_ridges(aes(y=factor(n_links))) +
+  theme_minimal() +
+  labs(y="Num. links in\nlink_taxa_abundances()",
+       x="Assortativity",
+       fill="Num. links")
+
 # plot betweenness
-betweenness
+s <- summary(unlist(betweenness))
+
+data.frame(
+  betweenness = unlist(betweenness),
+  n_links = rep(1:5,each=1000)
+) %>% 
+  filter(betweenness > 0) %>% 
+  ggplot(aes(x=betweenness)) +
+  ggridges::geom_density_ridges(aes(y=factor(n_links))) +
+  theme_minimal() +
+  labs(y="Num. links in\nlink_taxa_abundances()",
+       x="Betweenness",
+       fill="Num. links")
+
 # plot average path length
-avg_path_length
+data.frame(
+  n_links = rep(1:5,each=10),
+  avg_path_length = avg_path_length %>% unlist
+) %>% 
+  ggplot(aes(x=avg_path_length)) +
+  ggridges::geom_density_ridges(aes(y=factor(n_links))) +
+  theme_minimal() +
+  labs(y="Num. links in\nlink_taxa_abundances()",
+       x="Avg. path length",
+       fill="Num. links")
+
+
+
+#
+
+
+
+
+
+
+
+
+
+
+
+# # make a resident community matrix (even)
+even <- build_even_community(n.taxa = 100,n.samples = 44,n.reads = 3000, taxa.sd = 30) 
+# # add some hub taxa relationships
+recipient <- link_taxa_abundances(even,n.taxa = 35, relationship = 'hub',link.scale = 3,n.links = 3) %>% 
+  increase_abundances(prop = .2,increase.scale = 3,margin = "taxa")
+# # build a donor community based on even resident community
+donor <- build_donor_community(resident.comm = even, n.transplant.taxa = 30,overlap = .75)
+# # perform transplantation with resident antagonism
+final <- transplant_w_antagonism(recipient, donor, antag.ubiq = .5, antag.strength = 10, antag.abundant = TRUE)
+final2 <- transplant_w_facilitation(recipient, donor, facil.ubiq = .5, facil.strength = 10,facil.abundant = TRUE)
+# compare original donor newtaxa to final donor newtaxa
+### Make this a function ###
+
+
+# transform to relative abundance
+final_ra <- t(apply(final,1,function(x){x/sum(x)})) 
+final2_ra <- t(apply(final2,1,function(x){x/sum(x)}))
+donor_ra <- t(apply(donor,1,function(x){x/sum(x)}))
+
+
+rowSums(donor_ra)
+rowSums(final2_ra)
+final_transplants <- final_ra[,grepl("newtaxon_",colnames(final_ra))]
+final2_transplants <- final2_ra[,grepl("newtaxon_",colnames(final2_ra))]
+rowSums(final2_transplants)
+starting_transplants <- donor_ra[,grepl("newtaxon_",colnames(donor_ra))]
+rowSums(starting_transplants)
+matrix_diff <- (final_transplants - starting_transplants)
+matrix2_diff <- (final2_transplants - starting_transplants)
+final_transplants - final2_transplants
+
+# apply(matrix_diff,2,scale01)
+as.data.frame(matrix_diff) %>% 
+  mutate(sample=row.names(.)) %>% 
+  pivot_longer(starts_with("newtaxon_")) %>% 
+  ggplot(aes(x=sample,y=name,fill=value)) +
+  geom_tile() +
+  scale_fill_viridis_c() +
+  theme(axis.text.x = element_blank())
+
+heatmap(
+  matrix_diff,Colv = NA  
+)
+
+as.data.frame(matrix_diff) %>% 
+  mutate(sample=row.names(.)) %>% 
+  pivot_longer(starts_with("newtaxon_")) %>% 
+  ggplot(aes(x=value)) +
+  ggridges::geom_density_ridges(aes(y=name)) +
+  theme_minimal()
+
+matrix_diff %>% sum
+matrix2_diff %>% sum
+
+as.data.frame(matrix2_diff) %>% 
+  mutate(sample=row.names(.)) %>% 
+  pivot_longer(starts_with("newtaxon_")) %>% 
+  ggplot(aes(x=value)) +
+  ggridges::geom_density_ridges(aes(y=name)) +
+  theme_minimal()
+### NOTE: SINCE WE'RE LOOKING AT RELABUND HERE, IF THE RECIPIENT COMMUNITY HAS A LOT MORE TAXA THAN THE DONOR,
+###       THEN THE RELABUND OF THE NEW TAXA WILL BE LOWER BY DEFAULT IN THE FINAL COMMUNITY
+###       HOW CAN WE DEAL WITH THIS????!
+###       In other words, neither antagonism or facilitation have much effect on relative abundances,
+###       compared to the overwhelming effect of recipient community richness
+###
+###       Can we scale against number of taxa, perhaps, before calculating relative abundance?

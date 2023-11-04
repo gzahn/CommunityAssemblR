@@ -1,5 +1,5 @@
 
-reduce_taxa_abundances <- function(dat = NULL, # a matrix, samples are rows and columns are taxa
+reduce_abundances <- function(dat = NULL, # a matrix, samples are rows and columns are taxa
                              prop = .1, # needs to be between 0,1
                              reduction.scale = .9, # needs to be between 0,1
                              margin = "taxa" # needs to be "taxa" or "samples"
@@ -14,7 +14,7 @@ reduce_taxa_abundances <- function(dat = NULL, # a matrix, samples are rows and 
   if(margin == "taxa"){
     # setup ####
     n.rare.taxa <- round(ncol(dat) * prop)
-    rare.taxa <- sample(colnames(x),n.rare.taxa,replace = FALSE)
+    rare.taxa <- sample(colnames(dat),n.rare.taxa,replace = FALSE)
     reduce_counts <- function(x){round(x[,rare.taxa] * (1-reduction.scale))}
     
     dat[,rare.taxa] <- reduce_counts(dat)
