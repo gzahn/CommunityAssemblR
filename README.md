@@ -11,6 +11,8 @@ Eventual goal: to simulate various ecological assembly models for testing model 
 	- Network relationships
 	- Priority effects
 	- Competitive exclusion
+ 	- Antagonism
+  	- Facilitation
 	- etc.
 
 
