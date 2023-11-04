@@ -14,7 +14,7 @@ link_taxa_abundances <- function(dat, # community matrix with samples as columns
 stopifnot("matrix" %in% class(dat))
 stopifnot(class(n.taxa) == "numeric" & n.taxa > 0)
 stopifnot(relationship %in% c("positive","negative","hub"))
-stopifnot(link.scale >= 0 & class(scale) == "numeric")
+stopifnot(link.scale >= 0 & class(link.scale) == "numeric")
 
 n.taxa = round(n.taxa)
 if(n.taxa > 2 & relationship != "hub"){
@@ -105,5 +105,5 @@ return(dat)
 
 
 # example
-y <- link_taxa_abundances(dat = x,n.taxa = 10,relationship = "hub",link.scale = .5,n.links = 2)
-cbind(x,y)
+# y <- link_taxa_abundances(dat = x,n.taxa = 10,relationship = "hub",link.scale = .5,n.links = 2)
+# cbind(x,y)

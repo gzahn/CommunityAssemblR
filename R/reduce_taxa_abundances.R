@@ -42,6 +42,5 @@ reduce_taxa_abundances <- function(dat = NULL, # a matrix, samples are rows and 
 # rowSums(reduce_abundance(x,prop = .5,reduction.scale = .95,margin = "samples"))
 
 
-file.remove("./R/reduce_abundance.R")
 
 
