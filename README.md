@@ -1,6 +1,6 @@
 # CommunityAssemblR
 
-<img src="[drawing.jpg](https://github.com/gzahn/CommunityAssemblR/blob/main/media/hex_transparent.png)" alt="drawing" width="200"/>
+<img src="https://github.com/gzahn/CommunityAssemblR/blob/main/media/hex_transparent.png" alt="drawing" width="200"/>
 
 
 
