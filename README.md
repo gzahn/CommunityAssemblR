@@ -1,6 +1,7 @@
 # CommunityAssemblR
 
-![](https://github.com/gzahn/CommunityAssemblR/blob/main/media/hex_transparent.png)
+<img src="[drawing.jpg](https://github.com/gzahn/CommunityAssemblR/blob/main/media/hex_transparent.png)" alt="drawing" width="200"/>
+
 
 
 ### R functions for building mock species abundance tables and manipulating them
