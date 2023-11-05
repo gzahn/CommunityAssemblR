@@ -16,12 +16,12 @@ Eventual goal: to simulate ecological communities shaped by various assembly pre
 	- Priority effects
 	- Competitive exclusion
  	- Antagonism
-  - Facilitation
-  - Niche pre-emption
-  - Keystone taxa
-  - Abiotic filtering
-  - Dispersal
-  - 
+  	- Facilitation
+  	- Niche pre-emption
+  	- Keystone taxa
+  	- Abiotic filtering
+  	- Dispersal
+  	- 
 	- etc.
 
 ### Installation
