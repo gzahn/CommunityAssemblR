@@ -6,8 +6,8 @@ reduce_abundances <- function(dat = NULL, # a matrix, samples are rows and colum
                              ){
   # tests ####
   stopifnot("matrix" %in% class(dat))
-  stopifnot(is.numeric(prop) & prop >= 0 & prop <= 1)
-  stopifnot(is.numeric(reduction.scale) & reduction.scale >= 0 & reduction.scale <= 1)
+  stopifnot(class(prop) %in% c("numeric","integer") & prop >= 0 & prop <= 1)
+  stopifnot(class(reduction.scale) %in% c("numeric","integer") & reduction.scale >= 0 & reduction.scale <= 1)
   stopifnot(margin %in% c("taxa","samples"))
   # convert some proportion of taxa to be rarely seen
   

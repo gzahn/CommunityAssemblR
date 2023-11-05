@@ -15,6 +15,11 @@ scale01 <- function(x){
 
 transplant_w_facilitation <- function(recipient,donor,facil.ubiq=.5,facil.strength=1,facil.abundant=TRUE){
   
+  stopifnot("matrix" %in% class(donor))
+  stopifnot("matrix" %in% class(recipient))
+  stopifnot(class(facil.ubiq) %in% c("numeric","integer") & facil.ubiq >= 0 & facil.ubiq <= 1)
+  stopifnot(class(facil.strength) %in% c("numeric","integer") & facil.strength >= 0)
+  
   # rescale donor community to same range as recipient community
   # scaled against mean from recipient
   donor <- round(apply(donor,2,scale01) * (round(median(colSums(recipient)))))

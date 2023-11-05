@@ -106,7 +106,7 @@ for(links in 1:5){
   
 hub_list <- list()
 for(i in 1:10){
-  hub_list[[i]] <- link_taxa_abundances(dat = x,n.taxa = 50,relationship = "hub",link.scale = 3,n.links = links) 
+  hub_list[[i]] <- link_taxa_abundances(dat = even,n.taxa = 10,relationship = "hub",link.scale = 2*as.numeric(i),n.links = 2*as.numeric(i)) 
 }
 
 hub_se_list <- list()
@@ -118,6 +118,14 @@ for(i in seq_along(hub_list)){
                         pulsar.params=se.params)
   hub_se_graph[[i]] <- adj2igraph(getRefit(hub_se_list[[i]]))
 }
+
+for(i in 1:length(hub_se_graph)){
+  print(i)
+  print(plot_hubs(hub_se_graph[[i]]))
+}
+mygraph=hub_se_graph[[1]]
+plot_hubs(mygraph)
+
 
 # export network property results
 hubscores[[links]] <- 
@@ -214,7 +222,6 @@ final <- transplant_w_antagonism(recipient, donor, antag.ubiq = .5, antag.streng
 final2 <- transplant_w_facilitation(recipient, donor, facil.ubiq = .5, facil.strength = 10,facil.abundant = TRUE)
 final3 <- transplant_w_niche_occupation(niche.size.donor = 2, niche.size.resident = 3, process.type = "permission")
 
-donor
 x <- final3[,grep(pattern = "newtaxon_",colnames(final3))]
 y <- donor[,colnames(donor) %in% colnames(x)] 
 

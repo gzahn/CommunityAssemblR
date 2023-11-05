@@ -15,6 +15,13 @@ scale01 <- function(x){
 
 transplant_w_antagonism <- function(recipient,donor,antag.ubiq=.5,antag.strength=.1,antag.abundant=TRUE){
   
+  stopifnot("matrix" %in% class(donor))
+  stopifnot("matrix" %in% class(recipient))
+  stopifnot(class(antag.ubiq) %in% c("numeric","integer") & antag.ubiq >= 0 & antag.ubiq <= 1)
+  stopifnot(class(antag.strength) %in% c("numeric","integer") & antag.strength >= 0)
+  
+  
+  
   # rescale donor community to same range as recipient community
   # scaled against mean from recipient
   donor <- round(apply(donor,2,scale01) * (round(median(colSums(recipient) / nrow(recipient)))))

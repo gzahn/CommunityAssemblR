@@ -10,7 +10,7 @@ link_sample_communities <- function(dat, n.links = 1, group.size = 3, link.stren
   
   stopifnot(n.links >= 1 & class(n.links) == "numeric" & n.links <= sample.number/group.size)
   stopifnot(group.size >= 2 & class(group.size) == "numeric" & group.size <= sample.number/n.links)
-  stopifnot(link.strength <= 1 & link.strength >= 0 & class(link.strength) == "numeric")
+  stopifnot(link.strength <= 1 & link.strength >= 0 & class(link.strength) %in% c("numeric","integer"))
   
   for(i in 1:n.links){
   # pick random samples to link up

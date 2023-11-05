@@ -11,7 +11,7 @@ build_even_community <-
     stopifnot(class(n.samples) %in% c("numeric","double","integer") & n.samples > 0)
     stopifnot(class(n.reads) %in% c("numeric","double","integer") & n.reads > 0)
     stopifnot(taxa.dist %in% c("normal") & class(taxa.dist) == "character")
-    stopifnot(class(taxa.sd) %in% c("numeric","logical"))
+    stopifnot(class(taxa.sd) %in% c("numeric","logical","integer"))
 
     # setup
     # n.readspersample = n.reads / n.samples

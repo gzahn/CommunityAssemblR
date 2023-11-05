@@ -8,10 +8,10 @@ build_donor_community <- function(resident.comm,n.transplant.taxa,overlap=0){
   
   # set up parameters for build_even_community
   n.taxa <- round(n.transplant.taxa)
-  stopifnot(is.numeric(n.transplant.taxa) & n.transplant.taxa > 0)
+  stopifnot(class(n.transplant.taxa) %in% c("numeric","integer") & n.transplant.taxa > 0)
   stopifnot("matrix" %in% class(resident.comm))
   n.samples <- nrow(resident.comm)
-  stopifnot(class(overlap) == "numeric" & overlap >= 0 & overlap <= 1)
+  stopifnot(class(overlap) %in% c("numeric","integer") & overlap >= 0 & overlap <= 1)
   n.reads <- round(mean(rowSums(resident.comm)))
   taxa.sd <- round(sd(colSums(resident.comm)))
   taxa.dist = "normal"

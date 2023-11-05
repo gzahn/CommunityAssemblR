@@ -5,7 +5,7 @@ plot_hubs <- function(graph,bigpoint=10,littlepoint=3){
   art <- articulation_points(graph)
   plot(graph,
        layout = am.coord,
-       vertex.size=(scale01(abs(igraph::authority_score(x)$vector)) * 10)+3,
+       vertex.size=(scale01(abs(igraph::authority_score(graph)$vector)) * 10)+3,
          #ifelse(1:length(graph) %in% artpoints.z, bigpoint, littlepoint),
        vertex.label=NA)
 }
