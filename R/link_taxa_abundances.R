@@ -1,18 +1,29 @@
-# add co-ocurrence relationships
+#' Simulate co-occurrence relationships between taxa
+#'
+#' Manipulates a community matrix with samples as rows and taxa as columns.
+#'
+#' @param dat Numeric matrix. The starting community matrix that will be edited.
+#' @param n.taxa Positive numeric vector of length 1. The number of taxa to link together. If n.taxa=1, nothing happens. If n.taxa=2, two taxa will be linked. If n.taxa > 2, a hub network will be created (you must select relationship='hub'). Default = 2.
+#' @param relationship Character vector of length 1. Must be one of c("positive","negative","hub"). If "positive", then taxon 2 will be altered to increase proportionally with taxon 1. If "negative", the opposite will occurr. If "hub", approximately half of the taxa will have a positive and half a negative relationship with a random hub taxon. Default = "positive".
+#' @param link.scale Numeric vector of length 1. how strong should the similarity function be. Multipliciative. 0=no change.
+#' @param n.links Positive whole numeric vector of length 1. The number of taxa that will be linked with other taxa. Default = 20% of all samples.
+#'
+#' @return Taxon abundance matrix with samples as rows and taxa as columns. class='matrix'. Random taxon abundance values will be altered to simulate co-occurrence according to parameters selected.
+#'
+#' @examples
+#' comm <- build_even_community(n.taxa = 100,n.samples = 44,n.reads = 3000, taxa.sd = 30)
+#' link_taxa_abundances(dat = comm,n.taxa = 10,relationship = "hub",link.scale = .5,n.links = 2)
+#'
+#' @export
 
-# how many pairs of taxa do you want?
 link_taxa_abundances <- function(dat, # community matrix with samples as columns and rows as taxa (assumes row and col names)
                                  n.taxa = 2, # if greater than 2, do the hub taxa thing
                                  relationship = "positive", # positive or negative or hub
                                  link.scale = 0.2, # must be positive numeric; multiplicative amount for transformations
                                  n.links = round(ncol(dat) * .2) / 2){ # default is 20% of taxa are lined with some other taxon
-
-# variables
-
-
 # setup and tests
 stopifnot("matrix" %in% class(dat))
-stopifnot(class(n.taxa) == "numeric" & n.taxa > 0)
+stopifnot("numeric" %in% class(n.taxa) & n.taxa > 0)
 stopifnot(relationship %in% c("positive","negative","hub"))
 stopifnot(link.scale >= 0 & class(link.scale) %in% c("numeric","integer"))
 
@@ -57,18 +68,18 @@ if(relationship == "negative"){
   greater.abund.zeros <- unname(which(dat[,linked.taxa[greater.abund.taxa]] == 0))
   lesser.abund.zeros <- unname(which(dat[,linked.taxa[lesser.abund.taxa]] == 0))
   # where the less abundant taxon is zero, make the more abundant taxon even more abundant
-  dat[lesser.abund.zeros,linked.taxa][,greater.abund.taxa] <- 
+  dat[lesser.abund.zeros,linked.taxa][,greater.abund.taxa] <-
     round(dat[lesser.abund.zeros,linked.taxa][,greater.abund.taxa] * (1 + link.scale))
   # where both taxa have observations, reduce the abundance of the less abundant taxon even more
   greater.abund.observations <- unname(which(dat[,linked.taxa[greater.abund.taxa]] != 0))
   lesser.abund.observations <- unname(which(dat[,linked.taxa[lesser.abund.taxa]] == 0))
-  samples.both.positive <- 
+  samples.both.positive <-
     which(dat[,linked.taxa][,greater.abund.taxa] > 0 & dat[,linked.taxa][,lesser.abund.taxa] > 0)
   # raise abundance of more abuntant taxon
-  dat[,linked.taxa][,greater.abund.taxa][samples.both.positive] <- 
+  dat[,linked.taxa][,greater.abund.taxa][samples.both.positive] <-
   round(dat[,linked.taxa][,greater.abund.taxa][samples.both.positive] * (1 + link.scale))
   # reduce abundance of less abundant taxon
-  dat[,linked.taxa][,lesser.abund.taxa][samples.both.positive] <- 
+  dat[,linked.taxa][,lesser.abund.taxa][samples.both.positive] <-
     round(dat[,linked.taxa][,lesser.abund.taxa][samples.both.positive] * (1 - link.scale))
   }
 }
@@ -104,6 +115,3 @@ return(dat)
 }
 
 
-# example
-# y <- link_taxa_abundances(dat = x,n.taxa = 10,relationship = "hub",link.scale = .5,n.links = 2)
-# cbind(x,y)

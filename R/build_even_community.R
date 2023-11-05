@@ -1,5 +1,24 @@
-# MAKE A TAXA ABUNDANCE TABLE
-build_even_community <- 
+#' Build even community matrix
+#'
+#' Builds a community matrix with samples as rows and taxa as columns.
+#' Taxa abundances are drawn from a normal distribution for each sample (this is currently the only distribution supported).
+#'
+#'
+#'
+#' @param n.taxa Positive numeric vector of length 1. The number of taxa (columns) to generate. Default = 5.
+#' @param n.samples Positive numeric vector of length 1. The number of samples (rows) to generate. Default = 5.
+#' @param n.reads Positive numeric vector of length 1. The number of observations within each sample. This is analogous to per-sample sequencing depth.
+#' @param taxa.dist Currently, only the 'normal' distribution is accepted.
+#' @param taxa.sd The standard deviation for the randomization function that generates taxa abundances. Higher values generate more zeros for each taxon.
+#'
+#' @return Taxon abundance matrix with samples as rows and taxa as columns. class='matrix'
+#'
+#' @examples
+#' comm <- build_even_community(n.taxa = 100,n.samples = 44,n.reads = 3000, taxa.sd = 30)
+#'
+#' @export
+
+build_even_community <-
   function(n.taxa = 5, # must be positive integer (or coerceable)
            n.samples = 5, # must be positive integer (or coerceable)
            n.reads = 5000, # must be positive integer (or coerceable)
@@ -15,10 +34,10 @@ build_even_community <-
 
     # setup
     # n.readspersample = n.reads / n.samples
-    
-          
+
+
     # internal functions ####
-    
+
     ## for normal species abundances ####
     unif_vect <- function(N, M, sd = 1, pos.only = TRUE) {
       vec <- rnorm(N, M/N, sd)
@@ -36,12 +55,12 @@ build_even_community <-
       }
       vec
     }
-    
-    
+
+
     # make "otu table" ####
     sample.abundances <- list()
-    
-    community <- 
+
+    community <-
       if(taxa.dist == "normal"){
         ## for uniform species abundances ####
         for(i in 1:n.samples){
@@ -50,14 +69,13 @@ build_even_community <-
 
         mat <- matrix(unlist(sample.abundances),nrow = n.samples,byrow = TRUE)
         # mat <- t(mat)
-        
+
         row.names(mat) <- paste0("sample_",1:n.samples)
         colnames(mat) <- paste0("taxon_",1:n.taxa)
         mat
-      } 
-    
+      }
+
     # return community table
     return(community)
 }
 
-# build_even_community(n.taxa = 22,n.samples = 33,n.reads = 30455, taxa.sd = 3000) 
