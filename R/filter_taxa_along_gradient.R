@@ -17,6 +17,7 @@ filter_taxa_along_gradient <- function(dat, # community matrix with rows=samples
                                        groups=1, # N to split samples into (3*groups must be < nrow(dat)/groups)
                                        # remainder samples not within main group size will begin a new group
                                        association='negative', ## does the gradient increase or decrease abundance of affected taxa?
+                                       transplant.only=FALSE, # if TRUE, only newly introduced taxa from a transplantation will be affected
                                        show.gradient=FALSE){ # if TRUE, a plot showing fitted gradient levels will be shown
   
   stopifnot("matrix" %in% class(dat))
@@ -55,8 +56,16 @@ filter_taxa_along_gradient <- function(dat, # community matrix with rows=samples
   }
     
   # select taxa to reduce
-  n.taxa <- round(prop * ncol(dat))
-  affected.taxa <- sample(colnames(dat),n.taxa)
+  newtaxa.names <- colnames(dat)[grepl("^newtaxon_",x=colnames(dat))]
+  
+  if(transplant.only){
+    n.taxa <- round(prop * length(newtaxa.names))
+    affected.taxa <- sample(newtaxa.names,n.taxa)
+  }
+  if(!transplant.only){
+    n.taxa <- round(prop * ncol(dat))
+    affected.taxa <- sample(colnames(dat),n.taxa)  
+  }
   
   # get matrix of just affected taxa and transform
   if(association == 'positive'){

@@ -2,6 +2,7 @@
 reduce_abundances <- function(dat = NULL, # a matrix, samples are rows and columns are taxa
                              prop = .1, # needs to be between 0,1
                              reduction.scale = .9, # needs to be between 0,1
+                             transplant.only=FALSE, # if TRUE, only newly introduced taxa from a transplantation will be affected
                              margin = "taxa" # needs to be "taxa" or "samples"
                              ){
   # tests ####
@@ -13,8 +14,19 @@ reduce_abundances <- function(dat = NULL, # a matrix, samples are rows and colum
   
   if(margin == "taxa"){
     # setup ####
-    n.rare.taxa <- round(ncol(dat) * prop)
-    rare.taxa <- sample(colnames(dat),n.rare.taxa,replace = FALSE)
+    
+    newtaxa.names <- colnames(dat)[grepl("^newtaxon_",x=colnames(dat))]
+    
+    if(transplant.only){
+      n.rare.taxa <- round(prop * length(newtaxa.names))
+      rare.taxa <- sample(newtaxa.names,n.rare.taxa)
+    }
+    if(!transplant.only){
+      n.rare.taxa <- round(ncol(dat) * prop)
+      rare.taxa <- sample(colnames(dat),n.rare.taxa,replace = FALSE)
+    }
+    
+    
     reduce_counts <- function(x){round(x[,rare.taxa] * (1-reduction.scale))}
     
     dat[,rare.taxa] <- reduce_counts(dat)

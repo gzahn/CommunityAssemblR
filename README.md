@@ -40,6 +40,9 @@ devtools::install_github("gzahn/CommunityAssemblR")
 
 ### Example workflow (so far):
 
+
+
+**Simulate microbiome transplantation where the dominant resident taxa are antagonistic to 50% of the new donor taxa**
 ```
 # # make a resident community matrix (even)
 even <- build_even_community(n.taxa = 100,n.samples = 44,n.reads = 3000, taxa.sd = 30) 
@@ -52,5 +55,21 @@ recipient <- link_taxa_abundances(even,n.taxa = 35, relationship = 'hub',link.sc
 donor <- build_donor_community(resident.comm = even, n.transplant.taxa = 30,overlap = .75)
 
 # # simulate transplantation with resident community antagonism as the primary factor for success of novel taxa persistence
-final <- transplant_w_antagonism(recipient, donor, antag.ubiq = .5, antag.strength = 10, antag.abundant = TRUE)
+final <- transplant_w_antagonism(recipient, donor, antag.ubiq = .5, antag.strength = 10, antag.abundant = TRUE, transplant.only = TRUE)
 ```
+
+
+**Simulate microbiome transplantation where all the new donor taxa encounter steep environmental filtration along a gradient**
+```
+recipient <- even()
+donor <- build_donor_community(even,n.transplant.taxa = 30,overlap = .5)
+
+final <- transplant_w_antagonism(recipient,donor,antag.strength = 0) # stochastic transplantation
+final_w_filtration <- filter_taxa_along_gradient(final,prop = 1,transplant.only = TRUE,groups = 2,gradient.strength = 3)
+
+# compare community structure with and without the environmental filtration
+final %>% t() %>% heatmap(Colv = NA,Rowv = NA)
+final_w_filtration %>% t() %>% heatmap(Colv = NA,Rowv = NA)
+```
+
+

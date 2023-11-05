@@ -12,9 +12,18 @@ increase_abundances <- function(dat = NULL, # a matrix, samples are rows and col
   # convert some proportion of taxa to be highly abundant
   
   if(margin == "taxa"){
+    
+    newtaxa.names <- colnames(dat)[grepl("^newtaxon_",x=colnames(dat))]
+    
+    if(transplant.only){
+      n.abund.taxa <- round(prop * length(newtaxa.names))
+      abund.taxa <- sample(newtaxa.names,n.rare.taxa)
+    }
+    if(!transplant.only){
+      n.abund.taxa <- round(ncol(dat) * prop)
+      abund.taxa <- sample(colnames(dat),n.abund.taxa,replace = FALSE)
+    }
     # setup ####
-    n.abund.taxa <- round(ncol(dat) * prop)
-    abund.taxa <- sample(colnames(dat),n.abund.taxa,replace = FALSE)
     increase_counts <- function(x){round(x[,abund.taxa] * (1+increase.scale))}
     
     dat[,abund.taxa] <- increase_counts(dat)
