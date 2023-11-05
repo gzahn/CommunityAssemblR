@@ -10,6 +10,7 @@ source("./R/increase_abundances.R")
 source("./R/build_transplant_community.R")
 source("./R/transplant_w_antagonism.R")
 source("./R/transplant_w_facilitation.R")
+source("./R/transplant_w_niche_occupation.R")
 source("./R/helper_functions.R")
 
 # build an even community table
@@ -201,7 +202,6 @@ data.frame(
 
 
 
-
 # # make a resident community matrix (even)
 even <- build_even_community(n.taxa = 100,n.samples = 44,n.reads = 3000, taxa.sd = 30) 
 # # add some hub taxa relationships
@@ -212,6 +212,34 @@ donor <- build_donor_community(resident.comm = even, n.transplant.taxa = 30,over
 # # perform transplantation with resident antagonism
 final <- transplant_w_antagonism(recipient, donor, antag.ubiq = .5, antag.strength = 10, antag.abundant = TRUE)
 final2 <- transplant_w_facilitation(recipient, donor, facil.ubiq = .5, facil.strength = 10,facil.abundant = TRUE)
+final3 <- transplant_w_niche_occupation(niche.size.donor = 2, niche.size.resident = 3, process.type = "permission")
+
+donor
+x <- final3[,grep(pattern = "newtaxon_",colnames(final3))]
+y <- donor[,colnames(donor) %in% colnames(x)] 
+
+heatmap(x,Rowv = NA,Colv = NA);heatmap(y,Rowv = NA,Colv = NA)
+rowSums(x)
+rowSums(y)
+
+a <- 
+x %>% 
+  as.data.frame() %>% 
+  mutate(community="After",sample=row.names(x)) %>%
+  pivot_longer(starts_with("newtaxon")) 
+b <- 
+y %>% 
+  as.data.frame() %>% 
+  mutate(community = "Before",sample=row.names(y)) %>% 
+  pivot_longer(starts_with("newtaxon"))
+full_join(a,b) %>% 
+    ggplot(aes(x=sample,y=name,fill=value)) +
+    geom_tile() +
+  facet_wrap(~community)
+
+
+
+colnames(donor)
 # compare original donor newtaxa to final donor newtaxa
 ### Make this a function ###
 
