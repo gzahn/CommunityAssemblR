@@ -33,7 +33,7 @@ devtools::install_github("gzahn/CommunityAssemblR")
 	- Platform: x86_64-pc-linux-gnu (64-bit)
 	- Running under: Ubuntu 22.04.3 LTS
 
-### Example workflow (sa far):
+### Example workflow (so far):
 
 ```
 # # make a resident community matrix (even)
