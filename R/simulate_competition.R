@@ -79,7 +79,7 @@ simulate_competition <- function(dat,n.niches=3,niche.distr="normal",niche.separ
     for(i in colnames(dat)){
       # get two values from that distribution
       x <-
-        rnorm(2,
+        runif(2,
               min = unif.dist.mins[niche.assignments[i]],
               max = unif.dist.maxs[niche.assignments[i]])
       # arrange them smallest to largest
