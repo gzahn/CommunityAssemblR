@@ -6,19 +6,19 @@
 \usage{
 simulate_competition(
   dat,
-  n.niches = 3,
+  n.niches = ncol(dat)/2,
   niche.distr = "normal",
-  niche.separation = 3
+  niche.separation = n.niches^2
 )
 }
 \arguments{
 \item{dat}{Numeric matrix. The starting community matrix that will be edited.}
 
-\item{n.niches}{Positive whole numeric vector of length 1. The number of niches to simulate. All taxa will be assigned to one of these niches. Default=3.}
+\item{n.niches}{Positive whole numeric vector of length 1. The number of niches to simulate. All taxa will be assigned to one of these niches. Default=ncol(dat)/2.}
 
-\item{niche.distr}{Character vector of length 1. Must currently be in c("normal","uniform"). The distribution from which to draw niche overlap values. Default='normal'.}
+\item{niche.distr}{Character vector of length 1. Must currently be in c("normal"). The distribution from which to draw niche overlap values. Default='normal'.}
 
-\item{niche.separation}{Numeric vector of length 1. Indicates the standard deviation for the initial seeds that generate niches. Larger values lead to less niche overlap. Default=3.}
+\item{niche.separation}{Numeric vector of length 1. Indicates the standard deviation for the initial seeds that generate niches. Larger values lead to less niche overlap. Default=n.niches^2.}
 }
 \value{
 Taxon abundance matrix with samples as rows and taxa as columns. class='matrix'. Abundance values are updated to reflect all competitive outcomes.

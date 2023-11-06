@@ -3,9 +3,9 @@
 #' Manipulates a community matrix with samples as rows and taxa as columns. Taxa are assigned random ranges within a number of niche distributions. Taxa are also assigned random "fitness" values. Each possible pairing of taxa are matched and competition is simulated based on any niche overlap and differential fitness. Taxon abundances are altered accordingly for both taxa.
 #'
 #' @param dat Numeric matrix. The starting community matrix that will be edited.
-#' @param n.niches Positive whole numeric vector of length 1. The number of niches to simulate. All taxa will be assigned to one of these niches. Default=3.
-#' @param niche.distr Character vector of length 1. Must currently be in c("normal","uniform"). The distribution from which to draw niche overlap values. Default='normal'.
-#' @param niche.separation Numeric vector of length 1. Indicates the standard deviation for the initial seeds that generate niches. Larger values lead to less niche overlap. Default=3.
+#' @param n.niches Positive whole numeric vector of length 1. The number of niches to simulate. All taxa will be assigned to one of these niches. Default=ncol(dat)/2.
+#' @param niche.distr Character vector of length 1. Must currently be in c("normal"). The distribution from which to draw niche overlap values. Default='normal'.
+#' @param niche.separation Numeric vector of length 1. Indicates the standard deviation for the initial seeds that generate niches. Larger values lead to less niche overlap. Default=n.niches^2.
 #'
 #' @return Taxon abundance matrix with samples as rows and taxa as columns. class='matrix'. Abundance values are updated to reflect all competitive outcomes.
 #'
@@ -16,9 +16,7 @@
 #'
 #' @export
 
-
-
-simulate_competition <- function(dat,n.niches=3,niche.distr="normal",niche.separation=3){
+simulate_competition <- function(dat,n.niches=ncol(dat)/2,niche.distr="normal",niche.separation=n.niches^2){
 
   #setup
   n.niches <- ifelse(round(n.niches) < 1, 1,round(n.niches))
@@ -26,7 +24,7 @@ simulate_competition <- function(dat,n.niches=3,niche.distr="normal",niche.separ
   #tests
   stopifnot("matrix" %in% class(dat))
   stopifnot(class(n.niches) %in% c("numeric","integer") & n.niches > 0)
-  stopifnot(niche.distr %in% c("normal","uniform"))
+  stopifnot(niche.distr %in% c("normal"))
   stopifnot(class(niche.separation) %in% c("numeric","integer") & niche.separation > 0)
 
 
@@ -34,13 +32,14 @@ simulate_competition <- function(dat,n.niches=3,niche.distr="normal",niche.separ
   niche.names <- paste0("niche_",1:n.niches)
 
   # select random parameters for niche distributions
-  # for normal dist
-  norm.dist.means <- rnorm(n.niches,sd=niche.separation)
-  norm.dist.sds <- abs(rnorm(n.niches,sd=niche.separation))
-
-  # force signs to match min/max for unif distribution
+  # THESE UNIFORM DISTRIBUTIONS DON'T WORK WELL YET!!!!!!!!!!!!!!!!!!
   unif.dist.mins <- -abs(rnorm(n.niches,sd=niche.separation))
   unif.dist.maxs <- abs(rnorm(n.niches,sd=niche.separation))
+
+  # for normal dist
+  # pick N evenly spaced values as means
+  norm.dist.means <- seq(niche.separation,n.niches*(0.1+niche.separation),length.out=n.niches)
+  norm.dist.sds <- rep(n.niches,n.niches)
 
   # add niche names to niche parameters
   names(norm.dist.means) <- niche.names
@@ -147,7 +146,4 @@ simulate_competition <- function(dat,n.niches=3,niche.distr="normal",niche.separ
   }
 
   return(dat)
-
-
-
 }
