@@ -72,4 +72,12 @@ final %>% t() %>% heatmap(Colv = NA,Rowv = NA)
 final_w_filtration %>% t() %>% heatmap(Colv = NA,Rowv = NA)
 ```
 
+### Citing:
+
+Geoffrey Zahn. (2023). gzahn/CommunityAssemblR: 0.1.1 (0.1.1) [Computer software]. Zenodo. https://doi.org/10.5281/ZENODO.10073694
+
+[![DOI](https://zenodo.org/badge/714101784.svg)](https://zenodo.org/doi/10.5281/zenodo.10073694)
+
+
+
 
