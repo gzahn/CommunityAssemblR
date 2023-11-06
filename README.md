@@ -8,7 +8,7 @@
 
 This is a modular set of tools for building and altering community matrices. The standard community matrix gives abundance counts for N taxa (columns) in N samples (rows). There are also tools for simulating transplantations from a donor community to a resident community under various theoretical situations. These functions are intended to be modular and chainable so that a unique community can be progressively built that reflects a variety of selective pressures. This community can then be used to test the detection accuracy of predictive assembly models.
 
-This package is under active development.
+This package is under active development. *caveat emptor*
 
 Eventual goal: to simulate ecological communities shaped by various assembly pressures for testing model detection of 
 
