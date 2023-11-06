@@ -41,6 +41,8 @@ devtools::install_github("gzahn/CommunityAssemblR")
 ### Example workflow (so far):
 
 
+[**Tutorial**](https://github.com/gzahn/CommunityAssemblR/blob/main/tutorial.pdf)
+
 
 **Simulate microbiome transplantation where the dominant resident taxa are antagonistic to 50% of the new donor taxa**
 ```
