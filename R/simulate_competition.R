@@ -135,8 +135,6 @@ simulate_competition <- function(dat,n.niches=ncol(dat)/2,niche.distr="normal",n
   matches$overlap <- scale01(matches$overlap)
 
   # Now...use this lookup table to build successive pairings out of the abundance matrix and transform the values
-  # bkp <- dat
-  dat <- bkp
   for(i in 1:nrow(matches)){
     mat_pair <- dat[,c(matches$match1[i],matches$match2[i])]
     mat_pair[,matches$winner[i]] <- ifelse(mat_pair[,matches$winner[i]] == 0, 0,

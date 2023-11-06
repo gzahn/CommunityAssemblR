@@ -53,6 +53,7 @@ transplant_w_niche_occupation <- function(recipient,
 
   stopifnot(class(n.niches) == "numeric")
   n.niches <- round(n.niches)
+  ifelse(n.niches == 0,1,n.niches)
   stopifnot(n.niches > 0)
 
   if(!process.type %in% c("preemption","permission")){
