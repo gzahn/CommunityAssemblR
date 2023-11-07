@@ -2,6 +2,7 @@
 
 export(build_donor_community)
 export(build_even_community)
+export(check_transplant_success)
 export(decrease_abundances)
 export(filter_taxa_along_gradient)
 export(increase_abundances)
