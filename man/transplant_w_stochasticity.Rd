@@ -11,7 +11,7 @@ transplant_w_stochasticity(recipient, donor, stochasticity = 0.05)
 
 \item{donor}{Numeric matrix. The donor community matrix that represents the donor community. Typically, the result of build_donor_community().}
 
-\item{stochasticity}{Positive numeric vector of length 1, between 0 and 1. The level of random noise to add to novel taxa abundances. Default=.05}
+\item{stochasticity}{Positive numeric vector of length 1, between 0 and 1. The level of random noise to add to novel taxa abundances. If set to 0, no random noise will be added. Default=.05}
 }
 \value{
 Taxon abundance matrix with samples as rows and taxa as columns. class='matrix'.

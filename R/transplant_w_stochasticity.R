@@ -4,7 +4,7 @@
 #'
 #' @param recipient Numeric matrix. The starting community matrix that represents the resident community in N samples.
 #' @param donor Numeric matrix. The donor community matrix that represents the donor community. Typically, the result of build_donor_community().
-#' @param stochasticity Positive numeric vector of length 1, between 0 and 1. The level of random noise to add to novel taxa abundances. Default=.05
+#' @param stochasticity Positive numeric vector of length 1, between 0 and 1. The level of random noise to add to novel taxa abundances. If set to 0, no random noise will be added. Default=.05
 #'
 #' @return Taxon abundance matrix with samples as rows and taxa as columns. class='matrix'.
 #'
@@ -38,18 +38,21 @@ transplant_w_stochasticity <- function(recipient,donor,stochasticity=.05){
 
   recipient[,colnames(new_shared_taxa)] <- new_shared_taxa
 
-  # where new taxa arriving, reduce the new taxa, scaled by antag.strength
+  # where new taxa
   novel_taxa <- colnames(donor)[!colnames(donor) %in% colnames(recipient)]
   # rearrange in order because I'm OCD
   novel_taxa <- novel_taxa[order(as.numeric(sub("newtaxon_","",x = novel_taxa)))]
 
-
-
   # add random noise to novel taxa
   novel_taxa_dat <- donor[,novel_taxa]
-  multiplier <- matrix(rnorm(length(novel_taxa_dat),sd = 1),ncol=ncol(novel_taxa_dat),byrow = FALSE) * stochasticity
-  new.values <- round(novel_taxa_dat * (1+multiplier))
-  new.values <- (ifelse(new.values < 0, 0, new.values))
+  if(stochasticity > 0){
+    multiplier <- matrix(rnorm(length(novel_taxa_dat),sd = 1),ncol=ncol(novel_taxa_dat),byrow = FALSE) * stochasticity
+    new.values <- round(novel_taxa_dat * (1+multiplier))
+    new.values <- (ifelse(new.values < 0, 0, new.values))
+  }
+  if(stochasticity == 0 ){
+    new.values <- novel_taxa_dat
+  }
 
   # combine reduced new taxa with augmented recipient community
   final_community <- cbind(new.values,recipient)
