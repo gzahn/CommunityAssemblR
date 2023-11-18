@@ -7,6 +7,7 @@
 #' @param facil.ubiq Positive numeric vector of length 1, between 0 and 1. The proportion of your donor taxa that have facilitative taxa in the recipient community.
 #' @param facil.strength Positive numeric vector of length 1, between 0 and 1. Determines the scale of facilitation. i.e., how much increase to do to donor taxa, proportionate to facilitator relative abundance.
 #' @param facil.abundant Logical. If TRUE, recipient facilitators will be selected from the most abundant taxa. If FALSE, they will be selected randomly from all taxa.
+#' @param print.facil.taxa Logical. If TRUE, the random recipient taxa selected as facilitators will be printed to the console, and also exported to an object named "tmp_facil.taxa" in the Global environment (yeah, I know that's sloppy).
 #'
 #' @return Taxon abundance matrix with samples as rows and taxa as columns. class='matrix'.
 #'
@@ -18,7 +19,7 @@
 #' @export
 
 
-transplant_w_facilitation <- function(recipient,donor,facil.ubiq=.5,facil.strength=1,facil.abundant=TRUE){
+transplant_w_facilitation <- function(recipient,donor,facil.ubiq=.5,facil.strength=1,facil.abundant=TRUE,print.facil.taxa=FALSE){
 
   scale01 <- function(x){
     if(max(x) == 0){return(x)}
@@ -41,7 +42,7 @@ transplant_w_facilitation <- function(recipient,donor,facil.ubiq=.5,facil.streng
 
   recipient[,colnames(new_shared_taxa)] <- new_shared_taxa
 
-  # where new taxa arriving, reduce the new taxa, scaled by antag.strength
+  # where new taxa arriving, reduce the new taxa, scaled by facil.strength
   novel_taxa <- colnames(donor)[!colnames(donor) %in% colnames(recipient)]
   # rearrange in order because I'm OCD
   novel_taxa <- novel_taxa[order(as.numeric(sub("newtaxon_","",x = novel_taxa)))]
@@ -55,6 +56,11 @@ transplant_w_facilitation <- function(recipient,donor,facil.ubiq=.5,facil.streng
     facil.taxa <- names(colSums(recipient)[order(colSums(recipient),decreasing = TRUE)][1:num.facilitators])
   }
   facilitators <- recipient[,facil.taxa]
+
+  if(print.facil.taxa == TRUE){
+    print(facil.taxa)
+    assign("tmp_facil.taxa", value = facil.taxa, envir = .GlobalEnv)
+  }
 
   # assign them to a paired novel taxon from the donor community
   facilitated <- donor[,sample(novel_taxa,num.facilitators)]

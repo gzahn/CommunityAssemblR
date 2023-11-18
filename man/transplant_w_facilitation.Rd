@@ -9,7 +9,8 @@ transplant_w_facilitation(
   donor,
   facil.ubiq = 0.5,
   facil.strength = 1,
-  facil.abundant = TRUE
+  facil.abundant = TRUE,
+  print.facil.taxa = FALSE
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ transplant_w_facilitation(
 \item{facil.strength}{Positive numeric vector of length 1, between 0 and 1. Determines the scale of facilitation. i.e., how much increase to do to donor taxa, proportionate to facilitator relative abundance.}
 
 \item{facil.abundant}{Logical. If TRUE, recipient facilitators will be selected from the most abundant taxa. If FALSE, they will be selected randomly from all taxa.}
+
+\item{print.facil.taxa}{Logical. If TRUE, the random recipient taxa selected as facilitators will be printed to the console, and also exported to an object named "tmp_facil.taxa" in the Global environment (yeah, I know that's sloppy).}
 }
 \value{
 Taxon abundance matrix with samples as rows and taxa as columns. class='matrix'.
