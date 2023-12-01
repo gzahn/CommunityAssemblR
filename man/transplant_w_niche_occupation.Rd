@@ -12,7 +12,8 @@ transplant_w_niche_occupation(
   niche.size.resident = 3,
   niche.size.donor = 1,
   abundance.threshold = 0.05,
-  process.type = "preemption"
+  process.type = "preemption",
+  print.niche.taxa = FALSE
 )
 }
 \arguments{
@@ -26,11 +27,13 @@ transplant_w_niche_occupation(
 
 \item{niche.size.resident}{Positive whole numeric vector of length 1. The number of taxa in resident community that occupy the niche. Default = 3.}
 
-\item{niche.size.donor}{Positive whole numeric vector of length 1. The number of taxa in resident community that occupy the niche. Default = 1.}
+\item{niche.size.donor}{Positive whole numeric vector of length 1. The number of taxa in donor community that occupy the niche. Default = 1.}
 
 \item{abundance.threshold}{Positive numeric vector of length 1, between 0 and 1. The relative abundance threshold for resident taxa in niche to trigger effect. This will be mean of distribution...if niche.size.resident > 1, thresholds for additional taxa will be based on the distribution of niche.shape. Default = 0.05.}
 
 \item{process.type}{Character vector of length 1. Must currently be in c("preemption","permission"). Under "preemption", when the niche occupancy threshold is reached in a given sample, the resident taxon will begin to decrease the abundance of the donor taxon. Under "permission", when that threshold is reached, the resident taxon will enable the presence of the donor taxon (where the threshold is not reached, the donor taxon abundance will drop to 0). Default = "preemption".}
+
+\item{print.niche.taxa}{Logical. If TRUE, the random recipient and donor taxa selected to occupy niches will be printed to the console, and also exported to a list object named "tmp_selected_niche.taxa", in the Global environment (yeah, I know that's sloppy).}
 }
 \value{
 Taxon abundance matrix with samples as rows and taxa as columns. class='matrix'.

@@ -9,7 +9,8 @@ transplant_w_antagonism(
   donor,
   antag.ubiq = 0.5,
   antag.strength = 0.1,
-  antag.abundant = TRUE
+  antag.abundant = TRUE,
+  print.antag.taxa = FALSE
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ transplant_w_antagonism(
 \item{antag.strength}{Positive numeric vector of length 1, between 0 and 1. Determines the scale of antagonism. i.e., how much reduction to do to donor taxa, proportionate to antagonist relative abundance.}
 
 \item{antag.abundant}{Logical. If TRUE, recipient antagonists will be selected from the most abundant taxa. If FALSE, they will be selected randomly from all taxa.}
+
+\item{print.antag.taxa}{Logical. If TRUE, the random recipient taxa selected as antagonists will be printed to the console, and also exported to an object named "tmp_facil.taxa" in the Global environment (yeah, I know that's sloppy).}
 }
 \value{
 Taxon abundance matrix with samples as rows and taxa as columns. class='matrix'.

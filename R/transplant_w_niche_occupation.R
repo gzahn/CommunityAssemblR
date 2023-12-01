@@ -7,10 +7,10 @@
 #' @param n.niches Positive whole numeric vector of length 1. Number of rounds of niche selection to perform.
 #' @param niche.shape Character vector of length 1. Currently only "normal" is supported. The niche distribution shape to draw from for niche occupation values.
 #' @param niche.size.resident Positive whole numeric vector of length 1. The number of taxa in resident community that occupy the niche. Default = 3.
-#' @param niche.size.donor Positive whole numeric vector of length 1. The number of taxa in resident community that occupy the niche. Default = 1.
+#' @param niche.size.donor Positive whole numeric vector of length 1. The number of taxa in donor community that occupy the niche. Default = 1.
 #' @param abundance.threshold Positive numeric vector of length 1, between 0 and 1. The relative abundance threshold for resident taxa in niche to trigger effect. This will be mean of distribution...if niche.size.resident > 1, thresholds for additional taxa will be based on the distribution of niche.shape. Default = 0.05.
 #' @param process.type Character vector of length 1. Must currently be in c("preemption","permission"). Under "preemption", when the niche occupancy threshold is reached in a given sample, the resident taxon will begin to decrease the abundance of the donor taxon. Under "permission", when that threshold is reached, the resident taxon will enable the presence of the donor taxon (where the threshold is not reached, the donor taxon abundance will drop to 0). Default = "preemption".
-#'
+#' @param print.niche.taxa Logical. If TRUE, the random recipient and donor taxa selected to occupy niches will be printed to the console, and also exported to a list object named "tmp_selected_niche.taxa", in the Global environment (yeah, I know that's sloppy).
 #' @return Taxon abundance matrix with samples as rows and taxa as columns. class='matrix'.
 #'
 #' @examples
@@ -31,7 +31,8 @@ transplant_w_niche_occupation <- function(recipient,
                                           abundance.threshold = .05, # relative abundance threshold for resident taxa in niche to trigger effect
                                           # this will be mean of distribution...if niche.size.resident > 1, thresholds for additional taxa
                                           # will be based on the distribution of niche.shape
-                                          process.type = "preemption"){ # 'preemption' or 'permission'
+                                          process.type = "preemption", # 'preemption' or 'permission'
+                                          print.niche.taxa = FALSE){
 
   stopifnot("matrix" %in% class(donor))
   stopifnot("matrix" %in% class(recipient))
@@ -80,6 +81,11 @@ transplant_w_niche_occupation <- function(recipient,
 
   ### Niche occupation process, repeat n.niches times
 
+  # fill this list with taxa names, if print.niche.taxa==TRUE
+  if(print.niche.taxa == TRUE){
+    selected.taxa <- list()
+  }
+
   for(X in 1:n.niches){
     # Select resident abundance thresholds for N taxa, based on niche.shape distribution
     abund.thresholds <- abs(rnorm(n=niche.size.resident,mean = abundance.threshold,sd = .05))
@@ -89,6 +95,13 @@ transplant_w_niche_occupation <- function(recipient,
 
     # select donor taxa that will be influenced by resident niche occupation
     donor.niche.taxa <- sample(novel_taxa,niche.size.donor)
+
+    # if print.niche.taxa, store them in nested list
+    if(print.niche.taxa == TRUE){
+      selected.taxa[["resident"]][[paste0("round_",X)]] <- resident.niche.taxa
+      selected.taxa[["donor"]][[paste0("round_",X)]] <- donor.niche.taxa
+      print(resident.niche.taxa); print(donor.niche.taxa)
+    }
 
     # convert to relative abundance
     recipient_ra <- t(apply(recipient,1,function(x){x/sum(x)}))
@@ -118,6 +131,10 @@ transplant_w_niche_occupation <- function(recipient,
   }
 
   final_community <- cbind(novel.taxa.matrix,recipient)
+
+  if(print.niche.taxa == TRUE){
+    assign("tmp_selected_niche.taxa",selected.taxa,envir = .GlobalEnv)
+  }
 
   return(final_community)
 

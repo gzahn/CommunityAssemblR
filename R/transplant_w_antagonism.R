@@ -7,6 +7,7 @@
 #' @param antag.ubiq Positive numeric vector of length 1, between 0 and 1. The proportion of your donor taxa that have antagonistic taxa in the recipient community.
 #' @param antag.strength Positive numeric vector of length 1, between 0 and 1. Determines the scale of antagonism. i.e., how much reduction to do to donor taxa, proportionate to antagonist relative abundance.
 #' @param antag.abundant Logical. If TRUE, recipient antagonists will be selected from the most abundant taxa. If FALSE, they will be selected randomly from all taxa.
+#' @param print.antag.taxa Logical. If TRUE, the random recipient taxa selected as antagonists will be printed to the console, and also exported to an object named "tmp_facil.taxa" in the Global environment (yeah, I know that's sloppy).
 #'
 #' @return Taxon abundance matrix with samples as rows and taxa as columns. class='matrix'.
 #'
@@ -17,7 +18,11 @@
 #'
 #' @export
 
-transplant_w_antagonism <- function(recipient,donor,antag.ubiq=.5,antag.strength=.1,antag.abundant=TRUE){
+transplant_w_antagonism <- function(recipient,donor,
+                                    antag.ubiq=.5,
+                                    antag.strength=.1,
+                                    antag.abundant=TRUE,
+                                    print.antag.taxa=FALSE){
 
   scale01 <- function(x){
     if(max(x) == 0){return(x)}
@@ -57,6 +62,11 @@ transplant_w_antagonism <- function(recipient,donor,antag.ubiq=.5,antag.strength
     antag.taxa <- names(colSums(recipient)[order(colSums(recipient),decreasing = TRUE)][1:num.antagonists])
   }
   antagonists <- recipient[,antag.taxa]
+
+  if(print.antag.taxa == TRUE){
+    print(antag.taxa)
+    assign("tmp_antag.taxa", value = antag.taxa, envir = .GlobalEnv)
+  }
 
   # assign them to a paired novel taxon from the donor community
   antagonized <- donor[,sample(novel_taxa,num.antagonists)]

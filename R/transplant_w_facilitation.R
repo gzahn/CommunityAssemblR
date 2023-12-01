@@ -19,7 +19,11 @@
 #' @export
 
 
-transplant_w_facilitation <- function(recipient,donor,facil.ubiq=.5,facil.strength=1,facil.abundant=TRUE,print.facil.taxa=FALSE){
+transplant_w_facilitation <- function(recipient,donor,
+                                      facil.ubiq=.5,
+                                      facil.strength=1,
+                                      facil.abundant=TRUE,
+                                      print.facil.taxa=FALSE){
 
   scale01 <- function(x){
     if(max(x) == 0){return(x)}
