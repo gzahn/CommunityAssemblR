@@ -1,0 +1,11 @@
+Package: CommunityAssemblR
+Type: Package
+Title: Generates and Manipulates Community Matrices to Simulate Microbiome Transplantation Assembly Processes
+Version: 0.1.0
+Author: Geoff Zahn
+Maintainer: Geoff Zahn <zahn.geoff@gmail.com>
+Description: This is a modular set of tools for building and altering community matrices. The standard community matrix gives abundance counts for N taxa (columns) in N samples (rows). There are also tools for simulating transplantations from a donor community to a resident community under various theoretical situations. These functions are intended to be modular and chainable so that a unique community can be progressively built that reflects a variety of selective pressures. This community can then be used to test the detection accuracy of predictive assembly models.
+License: MIT
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.2.3
